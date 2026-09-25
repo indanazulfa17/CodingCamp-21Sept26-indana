@@ -1,0 +1,797 @@
+/* =========================================================
+   Expense & Budget Visualizer
+   Modern Minimalist UI
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-soft: #f9fafb;
+  --border: #e8eaee;
+
+  --text: #17191c;
+  --text-secondary: #6b7280;
+  --text-light: #9ca3af;
+
+  --primary: #7C3AED;
+  --primary-hover: #6D28D9;
+  --primary-soft: #F5F3FF;
+
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+
+  --success: #16a34a;
+
+  --radius-lg: 18px;
+  --radius-md: 12px;
+  --radius-sm: 9px;
+
+  --shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+  --shadow-hover: 0 8px 28px rgba(15, 23, 42, 0.07);
+}
+
+/* =========================================================
+   Base
+   ========================================================= */
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif;
+  line-height: 1.5;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* =========================================================
+   Header
+   ========================================================= */
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 72px;
+  padding: 0 5%;
+
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom: 1px solid var(--border);
+
+  backdrop-filter: blur(12px);
+}
+
+header h1 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* =========================================================
+   Theme Toggle
+   ========================================================= */
+
+#theme-toggle {
+  position: relative;
+
+  width: 62px;
+  height: 32px;
+
+  padding: 0 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #eef0f3;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+#theme-toggle .theme-icon {
+  position: relative;
+  z-index: 2;
+
+  font-size: 13px;
+  line-height: 1;
+
+  user-select: none;
+}
+
+#theme-toggle .toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+
+  width: 24px;
+  height: 24px;
+
+  background: #ffffff;
+  border-radius: 50%;
+
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+
+  transition: transform 0.25s ease;
+}
+
+#theme-toggle:hover {
+  border-color: #d5d9e0;
+}
+
+#theme-toggle:active {
+  transform: scale(0.96);
+}
+
+/* Dark mode position */
+[data-theme="dark"] #theme-toggle {
+  background: #292e37;
+}
+
+[data-theme="dark"] #theme-toggle .toggle-thumb {
+  transform: translateX(30px);
+}
+
+/* =========================================================
+   Main Layout
+   ========================================================= */
+
+main {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 20px 0 60px;
+
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-areas:
+    "form form"
+    "chart list";
+
+  gap: 20px;
+  align-items: start;
+}
+/* =========================================================
+   Cards
+   ========================================================= */
+#summary-section {
+  width: min(1180px, calc(100% - 40px));
+  margin: 28px auto 0;
+
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.total-card {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 28px 30px;
+  box-shadow: var(--shadow);
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.limit-card {
+  width: 240px;
+  align-self: center;
+
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 30px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-label {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#balance-display {
+  color: var(--primary);
+  font-size: 34px;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+.summary-description {
+  color: var(--text-light);
+  font-size: 12px;
+}
+
+#spending-limit {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 400;
+}
+
+#spending-limit::placeholder {
+  color: var(--text-light);
+  opacity: 1;
+}
+
+#spending-limit:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+#form-section,
+#chart-section,
+#list-section {
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  box-shadow: var(--shadow);
+
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+#form-section:hover,
+#chart-section:hover,
+#list-section:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+#form-section {
+  grid-area: form;
+  padding: 28px;
+}
+
+#chart-section {
+  grid-area: chart;
+
+  height: 390px;
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#list-section {
+  grid-area: list;
+
+  height: 390px;
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   Section Titles
+   ========================================================= */
+
+#form-section::before,
+#chart-section::before,
+#list-section::before {
+  display: block;
+
+  margin-bottom: 22px;
+
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+
+  color: var(--text);
+}
+
+#form-section::before {
+  content: "Add Expense";
+}
+
+#chart-section::before {
+  content: "Spending by Category";
+}
+
+#list-section::before {
+  content: "Transactions";
+}
+
+/* =========================================================
+   Form
+   ========================================================= */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+
+  margin-bottom: 18px;
+}
+
+.form-field label,
+.spending-limit-row label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+#input-form input[type="text"],
+#input-form input[type="number"],
+#input-form select,
+#spending-limit,
+#sort-select {
+  width: 100%;
+  height: 46px;
+
+  padding: 0 13px;
+
+  color: var(--text);
+  background: var(--surface);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+#input-form input::placeholder,
+#spending-limit::placeholder {
+  color: var(--text-light);
+}
+
+#input-form input:hover,
+#input-form select:hover,
+#spending-limit:hover,
+#sort-select:hover {
+  border-color: #d5d9e0;
+}
+
+#input-form input:focus,
+#input-form select:focus,
+#spending-limit:focus,
+#sort-select:focus {
+  border-color: var(--primary);
+
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* =========================================================
+   Submit Button
+   ========================================================= */
+
+#input-form button[type="submit"] {
+  width: 100%;
+  height: 46px;
+
+  margin-top: 4px;
+
+  border: none;
+  border-radius: var(--radius-sm);
+
+  color: #ffffff;
+  background: var(--primary);
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+#input-form button[type="submit"]:hover {
+  background: var(--primary-hover);
+}
+
+#input-form button[type="submit"]:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   Validation
+   ========================================================= */
+
+.field-error {
+  display: none;
+
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  color: var(--danger);
+}
+
+.field-error.visible {
+  display: block;
+}
+
+/* =========================================================
+   Chart
+   ========================================================= */
+
+#chart-section {
+  display: flex;
+  flex-direction: column;
+}
+
+#spending-chart {
+  width: 100% !important;
+  max-height: 300px;
+  margin: auto;
+}
+
+#chart-placeholder {
+  margin: auto;
+
+  color: var(--text-light);
+
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* =========================================================
+   Sort Controls
+   ========================================================= */
+
+.list-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+
+  margin-bottom: 14px;
+}
+
+.list-controls label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+#sort-select {
+  width: auto;
+  min-width: 170px;
+  height: 38px;
+
+  font-size: 0.78rem;
+}
+
+/* =========================================================
+   Transaction List
+   ========================================================= */
+#transaction-list {
+  flex: 1;
+  min-height: 0;
+
+  list-style: none;
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d5d9e0 transparent;
+}
+
+#transaction-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+#transaction-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#transaction-list::-webkit-scrollbar-thumb {
+  background: #d5d9e0;
+  border-radius: 999px;
+}
+
+/* Transaction row */
+
+#transaction-list li {
+  display: flex;
+  align-items: center;
+
+  min-height: 64px;
+
+  padding: 10px 2px;
+
+  border-bottom: 1px solid var(--border);
+
+  gap: 12px;
+}
+
+#transaction-list li:last-child {
+  border-bottom: none;
+}
+
+.tx-name {
+  flex: 1;
+
+  min-width: 0;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 0.88rem;
+  font-weight: 600;
+
+  color: var(--text);
+}
+
+.tx-amount {
+  font-size: 0.86rem;
+  font-weight: 700;
+
+  color: var(--primary);
+
+  white-space: nowrap;
+}
+
+.tx-category {
+  padding: 5px 9px;
+
+  color: var(--text-secondary);
+  background: var(--surface-soft);
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  font-size: 0.68rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   Delete Button
+   ========================================================= */
+
+.tx-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  color: var(--text-light);
+  background: transparent;
+
+  border: none;
+  border-radius: 8px;
+
+  font-size: 1rem;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
+}
+
+.tx-delete:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* =========================================================
+   Empty States
+   ========================================================= */
+
+#list-placeholder {
+  padding: 30px 10px;
+
+  color: var(--text-light);
+
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* =========================================================
+   Spending Limit Warning
+   ========================================================= */
+
+#balance-display.over-limit {
+  color: var(--danger);
+}
+
+#balance-display.over-limit::after {
+  content: "Over budget";
+
+  display: block;
+
+  margin-top: 2px;
+
+  font-size: 0.68rem;
+  font-weight: 600;
+
+  color: var(--danger);
+}
+
+/* =========================================================
+   Dark Mode
+   ========================================================= */
+
+[data-theme="dark"] {
+  --bg: #0f1115;
+  --surface: #181b21;
+  --surface-soft: #20242b;
+
+  --border: #292e37;
+
+  --text: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --text-light: #6b7280;
+
+  --primary: #8B5CF6;
+  --primary-hover: #A78BFA;
+  --primary-soft: rgba(139, 92, 246, 0.15);
+
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.1);
+
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --shadow-hover: 0 8px 28px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="dark"] header {
+  background: rgba(15, 17, 21, 0.92);
+}
+
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 900px) {
+  main {
+    grid-template-columns: 1fr;
+
+    grid-template-areas:
+      "form"
+      "chart"
+      "list";
+  }
+
+  #form-section,
+  #chart-section,
+  #list-section {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 600px) {
+  header {
+    min-height: 68px;
+    padding: 0 18px;
+  }
+
+  header h1 {
+    font-size: 0.95rem;
+  }
+
+  .header-right {
+    gap: 10px;
+  }
+
+  #balance-display {
+    font-size: 1.05rem;
+  }
+
+  #balance-display::before {
+    font-size: 0.6rem;
+  }
+
+  main {
+    width: min(100% - 24px, 600px);
+    padding: 24px 0 40px;
+    gap: 14px;
+  }
+
+  #form-section,
+  #chart-section,
+  #list-section {
+    border-radius: 15px;
+    padding: 20px;
+  }
+
+  #chart-section {
+    min-height: 340px;
+  }
+
+  .list-controls {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #sort-select {
+    width: 100%;
+  }
+
+  .tx-category {
+    display: none;
+  }
+
+  #transaction-list li {
+    min-height: 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  #summary-section {
+    flex-direction: column;
+  }
+
+  .total-card {
+    width: 100%;
+  }
+
+  .limit-card {
+    width: 100%;
+    align-self: stretch;
+  }
+}
